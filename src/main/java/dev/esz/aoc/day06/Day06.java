@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.*;
 
-public class Day06 {
+public interface Day06 {
     static int part1(List<String> lines) {
         Map<String, TreeNode> nodeMap = createTree(lines);
         return dfs(nodeMap.get("COM"), 0);
