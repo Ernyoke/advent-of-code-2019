@@ -46,6 +46,17 @@ public interface Utils {
         return numbers;
     }
 
+    static List<Long> readSingleLineToLongs(String path) {
+        List<Long> numbers = new ArrayList<>();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
+            String line = bufferedReader.readLine();
+            return Arrays.stream(line.split(",")).map(Long::parseLong).collect(Collectors.toUnmodifiableList());
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return numbers;
+    }
+
     static List<String> readLines(String path) {
         List<String> lines = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {

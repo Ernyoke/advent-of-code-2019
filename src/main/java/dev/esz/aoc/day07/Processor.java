@@ -1,4 +1,4 @@
-package dev.esz.aoc.day05;
+package dev.esz.aoc.day07;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -6,57 +6,29 @@ import lombok.RequiredArgsConstructor;
 import java.util.Arrays;
 import java.util.List;
 
-public interface Day05 {
-    static int part1(List<Integer> numbers, int input) {
-        return getExecutionResultPart1(numbers.stream().mapToInt(value -> value).toArray(), input);
+public class Processor {
+    public enum Status {
+        WAITING_INPUT, FINISHED, RUNNING, PAUSED
     }
 
-    static int part2(List<Integer> numbers, List<Integer> input) {
-        return getExecutionResultPart2(numbers.stream().mapToInt(value -> value).toArray(), input);
+    private final int[] ints;
+
+    @Getter
+    private int output;
+
+    @Getter
+    private Status status;
+
+    private int ip = 0;
+
+    public Processor(List<Integer> ints) {
+        this.ints = ints.stream().mapToInt(value -> value).toArray();
     }
 
-    static int getExecutionResultPart1(int[] ints, int input) {
-        int ip = 0;
-        int output = 0;
+    public void execute(List<Integer> input) {
+        status = Status.RUNNING;
         Instruction instruction = Instruction.fromValue(ints[ip]);
-        while (instruction.getOpCode() != OpCode.HALT) {
-            int a, b, destination;
-            switch (instruction.getOpCode()) {
-                case ADD:
-                    a = instruction.getFirstParamMode() == Mode.POSITION ? ints[ints[ip + 1]] : ints[ip + 1];
-                    b = instruction.getSecondParamMode() == Mode.POSITION ? ints[ints[ip + 2]] : ints[ip + 2];
-                    destination = ints[ip + 3];
-                    ints[destination] = a + b;
-                    break;
-                case MULTIPLY:
-                    a = instruction.getFirstParamMode() == Mode.POSITION ? ints[ints[ip + 1]] : ints[ip + 1];
-                    b = instruction.getSecondParamMode() == Mode.POSITION ? ints[ints[ip + 2]] : ints[ip + 2];
-                    destination = ints[ip + 3];
-                    ints[destination] = a * b;
-                    break;
-                case IN:
-                    destination = instruction.getThirdParamMode() == Mode.POSITION ? ints[ip + 1] : ints[ip + 1];
-                    ints[destination] = input;
-                    break;
-                case OUT:
-                    destination = ints[ip + 1];
-                    output = ints[destination];
-                    break;
-                case HALT:
-                    break;
-            }
-            ip += instruction.getOpCode().getPcIncrementValue();
-            instruction = Instruction.fromValue(ints[ip]);
-        }
-        return output;
-    }
-
-    static int getExecutionResultPart2(int[] ints, List<Integer> input) {
-        int ip = 0;
-        int output = 0;
-        int inputIndex = 0;
-        Instruction instruction = Instruction.fromValue(ints[ip]);
-        while (instruction.getOpCode() != OpCode.HALT) {
+        while (instruction.getOpCode() != OpCode.HALT && status == Status.RUNNING) {
             int a, b, c, destination;
             switch (instruction.getOpCode()) {
                 case ADD:
@@ -74,13 +46,19 @@ public interface Day05 {
                     ip += instruction.getOpCode().getPcIncrementValue();
                     break;
                 case IN:
-                    destination = instruction.getThirdParamMode() == Mode.POSITION ? ints[ip + 1] : ints[ip + 1];
-                    ints[destination] = input.get(inputIndex++);
-                    ip += instruction.getOpCode().getPcIncrementValue();
+                    if (input.size() > 0) {
+                        destination = instruction.getThirdParamMode() == Mode.POSITION ? ints[ip + 1] : ints[ip + 1];
+                        ints[destination] = input.get(0);
+                        input.remove(0);
+                        ip += instruction.getOpCode().getPcIncrementValue();
+                    } else {
+                        status = Status.WAITING_INPUT;
+                    }
                     break;
                 case OUT:
                     output = instruction.getFirstParamMode() == Mode.POSITION ? ints[ints[ip + 1]] : ints[ip + 1];
                     ip += instruction.getOpCode().getPcIncrementValue();
+                    status = Status.PAUSED;
                     break;
                 case JUMP_IF_TRUE:
                     a = instruction.getFirstParamMode() == Mode.POSITION ? ints[ints[ip + 1]] : ints[ip + 1];
@@ -126,9 +104,12 @@ public interface Day05 {
                     break;
             }
             instruction = Instruction.fromValue(ints[ip]);
+            if (instruction.getOpCode() == OpCode.HALT) {
+                status = Status.FINISHED;
+            }
         }
-        return output;
     }
+
 }
 
 enum OpCode {
@@ -194,7 +175,8 @@ class Instruction {
     private final Mode secondParamMode;
     private final Mode thirdParamMode;
 
-    public static Instruction fromValue(int value) {
+    public static Instruction fromValue(long lvalue) {
+        int value = (int) lvalue;
         OpCode opCode = OpCode.fromValue(value % 100);
 
         value /= 100;
