@@ -27,13 +27,13 @@ public interface Day14 {
 
         LongBinaryOperator fuelCalculator = (initialFuel, iter) -> {
             long fuel = initialFuel;
-            long ore2 = 0;
-            while (ore2 < 1000000000000L) {
+            long ore = 0;
+            while (ore < 1000000000000L) {
                 fuel += iter;
                 long finalFuel = fuel;
                 Map<String, Long> updatedFuelIngredients = new HashMap<>(fuelIngredients);
                 updatedFuelIngredients.entrySet().forEach(entry -> entry.setValue(entry.getValue() * finalFuel));
-                ore2 = computeORE(updatedFuelIngredients, reactions);
+                ore = computeORE(updatedFuelIngredients, reactions);
             }
             return fuel;
         };
