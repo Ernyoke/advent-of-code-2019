@@ -1,9 +1,8 @@
 package dev.esz.aoc.day12;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import lombok.Value;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -125,14 +124,11 @@ public interface Day12 {
     }
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 @ToString
 @EqualsAndHashCode
 class Vector {
-    private final int x;
-    private final int y;
-    private final int z;
+    int x, y, z;
 
     public Vector add(Vector other) {
         return new Vector(x + other.getX(), y + other.getY(), z + other.getZ());

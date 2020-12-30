@@ -1,8 +1,7 @@
 package dev.esz.aoc.day14;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import lombok.Value;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -116,30 +115,21 @@ public interface Day14 {
     }
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 @ToString
 class Reaction {
-    private final Chemical finalProduct;
-    private final List<Chemical> ingredients;
+    Chemical finalProduct;
+    List<Chemical> ingredients;
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 @ToString
 class Chemical {
-    private final String name;
-    private final long quantity;
+    String name;
+    long quantity;
 
     public static Chemical fromString(String chemicalString) {
         String[] parts = chemicalString.trim().split(" ");
         return new Chemical(parts[1], Long.parseLong(parts[0]));
     }
-}
-
-@RequiredArgsConstructor
-@Getter
-class Result {
-    private final long ore;
-    private final Map<String, Long> leftOvers;
 }

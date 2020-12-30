@@ -2,8 +2,8 @@ package dev.esz.aoc.day03;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import lombok.Value;
 
 import java.util.*;
 
@@ -88,12 +88,10 @@ enum Direction {
 }
 
 @EqualsAndHashCode
-@RequiredArgsConstructor
-@Getter
+@Value
 @ToString
 class Position {
-    private final int x;
-    private final int y;
+    int x, y;
 
     public int distance(Position other) {
         return Math.abs(x - other.getX()) + Math.abs(y - other.getY());

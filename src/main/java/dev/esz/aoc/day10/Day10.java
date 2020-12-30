@@ -1,8 +1,7 @@
 package dev.esz.aoc.day10;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import lombok.Value;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -188,12 +187,10 @@ public interface Day10 {
     }
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 @ToString
 class Point {
-    private final int x;
-    private final int y;
+    int x, y;
 
     public double distanceSquared(Point other) {
         return (x - other.getX()) * (x - other.getX()) + (y - other.getY()) * (y - other.getY());

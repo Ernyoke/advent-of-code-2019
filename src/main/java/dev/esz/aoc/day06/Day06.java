@@ -2,6 +2,7 @@ package dev.esz.aoc.day06;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.util.*;
 
@@ -67,11 +68,10 @@ public interface Day06 {
     }
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 class TreeNode {
-    private final String name;
-    private final List<TreeNode> children;
+    String name;
+    List<TreeNode> children;
 
     public void addChildren(TreeNode treeNode) {
         children.add(treeNode);

@@ -2,6 +2,7 @@ package dev.esz.aoc.day05;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.util.Arrays;
 import java.util.List;
@@ -186,13 +187,12 @@ enum Mode {
     }
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 class Instruction {
-    private final OpCode opCode;
-    private final Mode firstParamMode;
-    private final Mode secondParamMode;
-    private final Mode thirdParamMode;
+    OpCode opCode;
+    Mode firstParamMode;
+    Mode secondParamMode;
+    Mode thirdParamMode;
 
     public static Instruction fromValue(int value) {
         OpCode opCode = OpCode.fromValue(value % 100);
